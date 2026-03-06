@@ -1,0 +1,81 @@
+import pandas as pd
+
+# -----------------------------
+# Load Dataset
+# -----------------------------
+df = pd.read_csv("C:\\Users\\HP\\Downloads\\ecommerce_data_1000_rows.csv")
+
+print("-----Dataset Loaded Successfully-----\n")
+
+# Show first records
+print("---First 5 Records---")
+print(df.head())
+
+# -----------------------------
+# Data Preparation
+# -----------------------------
+
+# Convert Order_Date column to datetime
+df["Order_Date"] = pd.to_datetime(df["Order_Date"])
+
+# Create Total_Sales column
+df["Total_Sales"] = df["Quantity"] * df["Price"]
+
+print("\n-----Dataset After Adding Total Sales-----")
+print(df.head())
+
+# -----------------------------
+# Total Revenue
+# -----------------------------
+
+total_revenue = df["Total_Sales"].sum()
+
+print("\nTotal Revenue:", total_revenue)
+
+# -----------------------------
+# Customer Purchase Analysis
+# -----------------------------
+
+customer_analysis = df.groupby("Customer_ID")["Total_Sales"].sum()
+
+print("\n-----Customer Purchase Analysis-----")
+print(customer_analysis)
+
+# -----------------------------
+# Top Customers
+# -----------------------------
+
+top_customers = customer_analysis.sort_values(ascending=False).head(5)
+
+print("\n---Top 5 Customers---")
+print(top_customers)
+
+# -----------------------------
+# Monthly Sales Analysis
+# -----------------------------
+
+df["Month"] = df["Order_Date"].dt.month
+
+monthly_sales = df.groupby("Month")["Total_Sales"].sum()
+
+print("\n---Monthly Sales---")
+print(monthly_sales)
+
+# -----------------------------
+# Payment Method Analysis
+# -----------------------------
+
+payment_method = df["Payment_Method"].value_counts()
+
+print("\n---Payment Method Usage---")
+print(payment_method)
+
+# -----------------------------
+# Save Results
+# -----------------------------
+
+top_customers.to_csv("top_customers.csv")
+monthly_sales.to_csv("monthly_sales.csv")
+payment_method.to_csv("payment_analysis.csv")
+
+print("\n-----Analysis completed and results saved.-----")
